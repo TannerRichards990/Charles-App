@@ -7,30 +7,34 @@ const handler = async (event) => {
   const search = event.queryStringParameters.search;
 
   try {
-    const response = await fetch(
-      `https://api.yelp.com/v3/businesses/search?location=${zip}&location=${search}`,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.YELP_API_KEY}`,
-        },
-      }
+    const header = {
+      Authorization: `Bearer ${process.env.REACT_APP_YELP_API_KEY}`,
+    };
+    const resp = await fetch(
+      `https://api.yelp.com/v3/businesses/search?categories=restaurants&location=${zip}&term=${search}`,
+      { headers: header }
     );
+    if (!resp.ok) {
+      return {
+        statusCode: resp.status, body: resp.statusText };
 
-    const data = await response.json();
-    const json = JSON.stringify(data.businesses);
+    }
+
+    const data = await resp.json();
 
     return {
       statusCode: 200,
-      body: json,
+      body: JSON.stringify(data.businesses),
     };
-  }
-  catch (error) {
-    console.log(error);
+      
+  } catch (err) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Failed to grab the data' }),
+      body: JSON.stringify({ msg: err.message }),
     };
   }
 };
+
+
 
 module.exports = { handler };
