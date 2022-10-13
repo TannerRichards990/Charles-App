@@ -8,7 +8,7 @@ const handler = async (event) => {
 
   try {
     const response = await fetch(
-      `https://api.yelp.com/v3/businesses/search?term=${search}&location=${zip}`, 
+      `https://api.yelp.com/v3/businesses/search?location=${zip}&location=${search}`,
       {
         headers: {
           Authorization: `Bearer ${process.env.YELP_API_KEY}`,
